@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, CheckCircle } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import { validateResumeContent } from '@/utils/resumeAnalyzer';
 
 interface ResumeUploadProps {
   onFileUploaded: (file: File) => void;
@@ -63,16 +64,38 @@ export const ResumeUpload = ({ onFileUploaded }: ResumeUploadProps) => {
   const handleFileUpload = async (file: File) => {
     setIsUploading(true);
     
-    // Simulate upload process
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Resume uploaded successfully!",
-      description: "Starting AI analysis...",
-    });
-    
-    setIsUploading(false);
-    onFileUploaded(file);
+    try {
+      // Validate that the PDF appears to be a resume
+      const isValidResume = await validateResumeContent(file);
+      
+      if (!isValidResume) {
+        toast({
+          title: "Not a Resume",
+          description: "This PDF doesn't appear to be a resume. Please upload a proper resume document with career information.",
+          variant: "destructive",
+        });
+        setIsUploading(false);
+        return;
+      }
+      
+      // Simulate upload process
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      toast({
+        title: "Resume uploaded successfully!",
+        description: "Starting AI analysis...",
+      });
+      
+      setIsUploading(false);
+      onFileUploaded(file);
+    } catch (error) {
+      toast({
+        title: "Upload Failed",
+        description: "There was an error processing your resume. Please try again.",
+        variant: "destructive",
+      });
+      setIsUploading(false);
+    }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {

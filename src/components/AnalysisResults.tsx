@@ -89,7 +89,7 @@ export const AnalysisResults = ({ fileName, file }: AnalysisResultsProps) => {
                 Analysis Complete
               </CardTitle>
               <CardDescription className="text-primary-foreground/80">
-                {fileName} • Analyzed with AI
+                {fileName} • {analysisData.resumeType} Resume
               </CardDescription>
             </div>
             <div className="text-right">
