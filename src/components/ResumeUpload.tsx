@@ -31,11 +31,30 @@ export const ResumeUpload = ({ onFileUploaded }: ResumeUploadProps) => {
     const file = files[0];
     
     if (file && (file.type === 'application/pdf' || file.name.endsWith('.pdf'))) {
+      // Basic validation for resume-like content
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        toast({
+          title: "File too large",
+          description: "Please upload a PDF file smaller than 10MB.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (file.size < 1024) { // Too small to be a real resume
+        toast({
+          title: "File too small",
+          description: "This doesn't appear to be a valid resume. Please upload a proper PDF resume.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       handleFileUpload(file);
     } else {
       toast({
         title: "Invalid file type",
-        description: "Please upload a PDF file only.",
+        description: "Please upload a PDF resume only.",
         variant: "destructive",
       });
     }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -11,59 +12,70 @@ import {
   Award,
   BookOpen,
   ArrowRight,
-  Download
+  Download,
+  FileUser
 } from 'lucide-react';
+import { generateAnalysis, generateReportPDF, type AnalysisData } from '@/utils/resumeAnalyzer';
+import { useToast } from "@/hooks/use-toast";
 
 interface AnalysisResultsProps {
   fileName: string;
+  file: File;
 }
 
-export const AnalysisResults = ({ fileName }: AnalysisResultsProps) => {
-  // Mock analysis data
-  const analysisData = {
-    overallScore: 85,
-    strengths: [
-      "Strong technical skills",
-      "Relevant experience",
-      "Clear formatting",
-      "Quantified achievements"
-    ],
-    improvements: [
-      "Add more soft skills",
-      "Include certifications",
-      "Enhance project descriptions"
-    ],
-    skills: [
-      { name: "JavaScript", level: 90 },
-      { name: "React", level: 85 },
-      { name: "Python", level: 75 },
-      { name: "Project Management", level: 60 },
-      { name: "Communication", level: 70 }
-    ],
-    careerPaths: [
-      {
-        title: "Senior Frontend Developer",
-        match: 92,
-        description: "Perfect fit based on your React and JavaScript expertise",
-        requirements: ["Advanced React", "TypeScript", "Testing"],
-        growth: "High demand, $95k-$130k"
-      },
-      {
-        title: "Full Stack Developer",
-        match: 78,
-        description: "Great opportunity to expand backend skills",
-        requirements: ["Node.js", "Database Design", "APIs"],
-        growth: "Excellent growth, $85k-$120k"
-      },
-      {
-        title: "Technical Lead",
-        match: 65,
-        description: "Leadership role leveraging technical background",
-        requirements: ["Team Leadership", "Architecture", "Mentoring"],
-        growth: "Leadership track, $110k-$150k"
-      }
-    ]
+export const AnalysisResults = ({ fileName, file }: AnalysisResultsProps) => {
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Generate dynamic analysis based on the actual file
+    const analysis = generateAnalysis(file);
+    setAnalysisData(analysis);
+  }, [file]);
+
+  const handleDownloadReport = () => {
+    if (!analysisData) return;
+    
+    try {
+      const reportContent = generateReportPDF(analysisData, fileName);
+      const blob = new Blob([reportContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Resume_Analysis_Report_${fileName.replace('.pdf', '')}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Report Downloaded!",
+        description: "Your detailed analysis report has been saved to your downloads.",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "There was an error downloading your report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
+
+  const handleCreateProfile = () => {
+    toast({
+      title: "Feature Coming Soon!",
+      description: "Create Profile will let you save your analysis and build a professional profile for job matching. This feature is under development.",
+    });
+  };
+
+  if (!analysisData) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -202,12 +214,12 @@ export const AnalysisResults = ({ fileName }: AnalysisResultsProps) => {
 
       {/* Action Buttons */}
       <div className="flex gap-4 justify-center">
-        <Button variant="professional" size="lg">
+        <Button variant="professional" size="lg" onClick={handleDownloadReport}>
           <Download className="h-4 w-4 mr-2" />
           Download Report
         </Button>
-        <Button variant="outline" size="lg">
-          <User className="h-4 w-4 mr-2" />
+        <Button variant="outline" size="lg" onClick={handleCreateProfile}>
+          <FileUser className="h-4 w-4 mr-2" />
           Create Profile
         </Button>
       </div>

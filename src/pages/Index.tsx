@@ -98,7 +98,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="max-w-6xl mx-auto">
-            <AnalysisResults fileName={uploadedFile.name} />
+            <AnalysisResults fileName={uploadedFile.name} file={uploadedFile} />
           </div>
         )}
       </main>
