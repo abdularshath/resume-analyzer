@@ -81,7 +81,19 @@ const skillDatabase = {
   "Adobe Creative Suite": { category: "Design", level: "tool", related: ["Photoshop", "Illustrator", "Creative Design"] },
   "Figma": { category: "Design", level: "tool", related: ["UI Design", "Prototyping", "Collaboration"] },
   "Prototyping": { category: "Design", level: "process", related: ["User Testing", "Wireframing", "Interaction Design"] },
-  "Visual Design": { category: "Design", level: "skill", related: ["Typography", "Color Theory", "Layout"] }
+  "Visual Design": { category: "Design", level: "skill", related: ["Typography", "Color Theory", "Layout"] },
+
+  // Cyber Security
+  "Network Security": { category: "Security", level: "core", related: ["Firewalls", "IDS/IPS", "VPN"] },
+  "Penetration Testing": { category: "Security", level: "testing", related: ["Vulnerability Assessment", "Ethical Hacking", "OWASP"] },
+  "Incident Response": { category: "Security", level: "process", related: ["Forensics", "Threat Analysis", "Recovery"] },
+  "Security Compliance": { category: "Security", level: "governance", related: ["CISSP", "ISO 27001", "GDPR"] },
+  "Ethical Hacking": { category: "Security", level: "testing", related: ["Penetration Testing", "Vulnerability Assessment", "Bug Bounty"] },
+  "Cybersecurity": { category: "Security", level: "core", related: ["Risk Assessment", "Security Architecture", "Threat Modeling"] },
+  "Vulnerability Assessment": { category: "Security", level: "analysis", related: ["Security Scanning", "Risk Analysis", "Penetration Testing"] },
+  "Security Architecture": { category: "Security", level: "design", related: ["Zero Trust", "Defense in Depth", "Security Controls"] },
+  "Threat Intelligence": { category: "Security", level: "analysis", related: ["Threat Hunting", "IOCs", "SIEM"] },
+  "Digital Forensics": { category: "Security", level: "investigation", related: ["Evidence Collection", "Malware Analysis", "Incident Response"] }
 };
 
 // Career paths database with skill requirements
@@ -175,6 +187,51 @@ const careerPathsDatabase = [
     description: "Streamline development and deployment processes", 
     growth: "High demand, $100k-$140k",
     matchBonus: { "Git": 10, "AWS": 15, "Docker": 12 }
+  },
+  {
+    title: "Cybersecurity Analyst",
+    requiredSkills: ["Network Security", "Incident Response", "Security Compliance"],
+    optionalSkills: ["SIEM", "Threat Intelligence", "Risk Assessment"],
+    category: "Security",
+    description: "Monitor and protect organizations from cyber threats",
+    growth: "Critical demand, $85k-$125k",
+    matchBonus: { "Network Security": 18, "Incident Response": 15, "Cybersecurity": 12 }
+  },
+  {
+    title: "Penetration Tester",
+    requiredSkills: ["Penetration Testing", "Ethical Hacking", "Vulnerability Assessment"],
+    optionalSkills: ["OWASP", "Bug Bounty", "Security Tools"],
+    category: "Security",
+    description: "Test and assess security vulnerabilities in systems",
+    growth: "Specialized field, $95k-$145k",
+    matchBonus: { "Penetration Testing": 20, "Ethical Hacking": 18, "Vulnerability Assessment": 15 }
+  },
+  {
+    title: "Security Engineer",
+    requiredSkills: ["Security Architecture", "Network Security", "Security Compliance"],
+    optionalSkills: ["Cloud Security", "Zero Trust", "DevSecOps"],
+    category: "Security",
+    description: "Design and implement secure systems and infrastructure",
+    growth: "High growth, $110k-$155k",
+    matchBonus: { "Security Architecture": 18, "Network Security": 15, "Cybersecurity": 12 }
+  },
+  {
+    title: "Digital Forensics Investigator",
+    requiredSkills: ["Digital Forensics", "Incident Response", "Evidence Collection"],
+    optionalSkills: ["Malware Analysis", "Legal Procedures", "Data Recovery"],
+    category: "Security",
+    description: "Investigate cybercrimes and security incidents",
+    growth: "Specialized expertise, $90k-$135k",
+    matchBonus: { "Digital Forensics": 20, "Incident Response": 15, "Cybersecurity": 10 }
+  },
+  {
+    title: "Security Consultant",
+    requiredSkills: ["Security Compliance", "Risk Assessment", "Security Architecture"],
+    optionalSkills: ["CISSP", "ISO 27001", "Threat Modeling"],
+    category: "Security",
+    description: "Advise organizations on security best practices and compliance",
+    growth: "Consulting growth, $100k-$150k",
+    matchBonus: { "Security Compliance": 18, "Risk Assessment": 15, "Security Architecture": 12 }
   }
 ];
 
@@ -193,7 +250,9 @@ const generateSkillsFromFile = (file: File, seed: number): string[] => {
     'design': ['UI/UX Design', 'Figma', 'Adobe Creative Suite', 'Prototyping', 'Visual Design'],
     'marketing': ['Digital Marketing', 'SEO', 'Analytics', 'Social Media', 'Content Strategy'],
     'product': ['Product Strategy', 'User Research', 'Analytics', 'Agile', 'Communication'],
-    'sales': ['Sales Strategy', 'CRM', 'Negotiation', 'Lead Generation', 'Customer Relations']
+    'sales': ['Sales Strategy', 'CRM', 'Negotiation', 'Lead Generation', 'Customer Relations'],
+    'security': ['Network Security', 'Cybersecurity', 'Penetration Testing', 'Incident Response', 'Security Compliance'],
+    'cyber': ['Cybersecurity', 'Ethical Hacking', 'Vulnerability Assessment', 'Digital Forensics', 'Threat Intelligence']
   };
   
   // Check filename for skill indicators
@@ -281,7 +340,9 @@ const determineCareerType = (detectedSkills: string[]): string => {
     'UX Designer': ['UI/UX Design', 'Figma', 'User Research', 'Prototyping', 'Adobe Creative Suite'],
     'Digital Marketer': ['Digital Marketing', 'SEO', 'Analytics', 'Social Media', 'Content Strategy'],
     'Product Manager': ['Product Strategy', 'User Research', 'Analytics', 'Agile', 'Communication'],
-    'Sales Professional': ['Sales Strategy', 'CRM', 'Negotiation', 'Lead Generation', 'Customer Relations']
+    'Sales Professional': ['Sales Strategy', 'CRM', 'Negotiation', 'Lead Generation', 'Customer Relations'],
+    'Cybersecurity Specialist': ['Network Security', 'Cybersecurity', 'Incident Response', 'Security Compliance', 'Threat Intelligence'],
+    'Security Analyst': ['Penetration Testing', 'Vulnerability Assessment', 'Digital Forensics', 'Ethical Hacking', 'Security Architecture']
   };
   
   let bestMatch = 'Professional';
@@ -314,7 +375,12 @@ const generateStrengthsFromSkills = (detectedSkills: string[], seed: number): st
     'Product Strategy': ['Strategic thinking abilities', 'Product vision and roadmap skills'],
     'Sales Strategy': ['Revenue generation expertise', 'Customer relationship management'],
     'SQL': ['Database management skills', 'Data querying proficiency'],
-    'Git': ['Version control expertise', 'Collaborative development skills']
+    'Git': ['Version control expertise', 'Collaborative development skills'],
+    'Network Security': ['Security infrastructure expertise', 'Threat detection and prevention'],
+    'Cybersecurity': ['Risk assessment capabilities', 'Security best practices knowledge'],
+    'Penetration Testing': ['Ethical hacking expertise', 'Vulnerability identification skills'],
+    'Incident Response': ['Crisis management abilities', 'Forensic investigation skills'],
+    'Digital Forensics': ['Evidence collection expertise', 'Investigative analysis skills']
   };
   
   const allStrengths: string[] = [];
