@@ -33,17 +33,16 @@ export const AnalysisResults = ({ fileName, file }: AnalysisResultsProps) => {
     setAnalysisData(analysis);
   }, [file]);
 
-  const handleDownloadReport = () => {
+  const handleDownloadReport = async () => {
     if (!analysisData) return;
     
     try {
-      const reportContent = generateReportPDF(analysisData, fileName);
-      const blob = new Blob([reportContent], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
+      const pdfBlob = await generateReportPDF(analysisData, fileName);
+      const url = URL.createObjectURL(pdfBlob);
       
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Resume_Analysis_Report_${fileName.replace('.pdf', '')}.txt`;
+      link.download = `Resume_Analysis_Report_${fileName.replace('.pdf', '')}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -51,7 +50,7 @@ export const AnalysisResults = ({ fileName, file }: AnalysisResultsProps) => {
       
       toast({
         title: "Report Downloaded!",
-        description: "Your detailed analysis report has been saved to your downloads.",
+        description: "Your professional PDF analysis report has been saved to your downloads.",
       });
     } catch (error) {
       toast({
